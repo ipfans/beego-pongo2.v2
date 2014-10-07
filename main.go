@@ -30,21 +30,9 @@ var devMode bool
 // Templates are looked up in `templates/` instead of Beego's default `views/` so that
 // Beego doesn't attempt to load and parse our templates with `html/template`.
 func Render(beegoCtx *context.Context, tmpl string, ctx Context) {
-	var err *p2.Error
-
-	mutex.RLock()
-	template, ok := templates[tmpl]
-	mutex.RUnlock()
-
-	if !ok || devMode {
-		template, err = p2.FromFile("templates/" + tmpl)
-		// log.Println(err)
-		if err != nil {
-			panic(err)
-		}
-		mutex.Lock()
-		templates[tmpl] = template
-		mutex.Unlock()
+	template, err := p2.FromCache("templates/" + tmpl)
+	if err != nil {
+		panic(err)
 	}
 
 	var pCtx p2.Context
