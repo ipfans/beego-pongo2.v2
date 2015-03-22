@@ -1,8 +1,6 @@
 package pongo2
 
 import (
-	"bytes"
-
 	"github.com/astaxie/beego"
 	p2 "github.com/flosch/pongo2"
 )
@@ -11,13 +9,17 @@ var xsrfTemplate = p2.Must(p2.FromString(`<input type="hidden" name="_xsrf" valu
 
 type tagXSRFTokenNode struct{}
 
-func (node *tagXSRFTokenNode) Execute(ctx *p2.ExecutionContext, buffer *bytes.Buffer) *p2.Error {
+func (node *tagXSRFTokenNode) Execute(ctx *p2.ExecutionContext, writer p2.TemplateWriter) *p2.Error {
 	if !beego.EnableXSRF {
 		return nil
 	}
 
 	xsrftoken := ctx.Public["_xsrf"]
-	return xsrfTemplate.ExecuteWriter(p2.Context{"_xsrf": xsrftoken}, buffer)
+	err := xsrfTemplate.ExecuteWriter(p2.Context{"_xsrf": xsrftoken}, writer)
+	if err != nil {
+		return err.(*p2.Error)
+	}
+	return nil
 }
 
 // tagXSRFParser implements a {% xsrftoken %} tag that inserts <input type="hidden" name="_xsrf" value="{{ _xsrf }}">

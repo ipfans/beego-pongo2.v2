@@ -1,8 +1,6 @@
 package pongo2
 
 import (
-	"bytes"
-
 	"github.com/astaxie/beego"
 	p2 "github.com/flosch/pongo2"
 )
@@ -11,7 +9,7 @@ type tagURLForNode struct {
 	objectEvaluators []p2.IEvaluator
 }
 
-func (node *tagURLForNode) Execute(ctx *p2.ExecutionContext, buffer *bytes.Buffer) *p2.Error {
+func (node *tagURLForNode) Execute(ctx *p2.ExecutionContext, writer p2.TemplateWriter) *p2.Error {
 	args := make([]string, len(node.objectEvaluators))
 	for i, ev := range node.objectEvaluators {
 		obj, err := ev.Evaluate(ctx)
@@ -22,17 +20,17 @@ func (node *tagURLForNode) Execute(ctx *p2.ExecutionContext, buffer *bytes.Buffe
 	}
 
 	var url string
-	if len(args) > 2 {
+	if len(args) >= 2 {
 		new := make([]interface{}, len(args)-1)
-		for i, v := range old {
+		for i, v := range args[1:] {
 			new[i] = interface{}(v)
 		}
-		url = beego.UrlFor(args[0], new...)
+		url = beego.UrlFor(args[0], new)
 	} else {
 		url = beego.UrlFor(args[0])
 	}
 
-	buffer.WriteString(url)
+	writer.WriteString(url)
 	return nil
 }
 
