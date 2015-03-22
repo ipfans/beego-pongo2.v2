@@ -4,7 +4,7 @@ import (
 	"bytes"
 
 	"github.com/astaxie/beego"
-	p2 "gopkg.in/flosch/pongo2.v2"
+	p2 "github.com/flosch/pongo2"
 )
 
 var xsrfTemplate = p2.Must(p2.FromString(`<input type="hidden" name="_xsrf" value="{{ _xsrf }}">`))

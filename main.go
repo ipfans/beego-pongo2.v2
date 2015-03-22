@@ -14,7 +14,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-	p2 "gopkg.in/flosch/pongo2.v2"
+	p2 "github.com/flosch/pongo2"
 )
 
 type Context map[string]interface{}

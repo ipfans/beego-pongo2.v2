@@ -4,7 +4,7 @@ import (
 	"bytes"
 
 	"github.com/astaxie/beego"
-	p2 "gopkg.in/flosch/pongo2.v2"
+	p2 "github.com/flosch/pongo2"
 )
 
 type tagURLForNode struct {
@@ -21,7 +21,16 @@ func (node *tagURLForNode) Execute(ctx *p2.ExecutionContext, buffer *bytes.Buffe
 		args[i] = obj.String()
 	}
 
-	url := beego.UrlFor(args[0], args[1:]...)
+	var url string
+	if len(args) > 2 {
+		new := make([]interface{}, len(args)-1)
+		for i, v := range old {
+			new[i] = interface{}(v)
+		}
+		url = beego.UrlFor(args[0], new...)
+	} else {
+		url = beego.UrlFor(args[0])
+	}
 
 	buffer.WriteString(url)
 	return nil
